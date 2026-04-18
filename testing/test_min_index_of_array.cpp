@@ -6,50 +6,81 @@
 #include "sorting.h"
 
 TEST(MinIndexOfArrayTests, SimpleMinIndexAtFrontOfArray) {
-    /*
-     * See if we can find the index of the minimum value when it is at the front of the array
-     */
+    int ar[] = {1, 5, 9, 2};
+    EXPECT_EQ(min_index_of_array(ar, 4), 0);
 }
 
 TEST(MinIndexOfArrayTests, SimpleMinIndexAtEndOfArray) {
-    /*
-     * See if we can find the index of the minimum value when it is at the end of the array
-     */
+    int ar[] = {7, 8, 9, 1};
+    EXPECT_EQ(min_index_of_array(ar, 4), 3);
 }
 
 TEST(MinIndexOfArrayTests, SimpleMinIndexAtMiddleOfArray) {
-    /*
-     * See if we can find the index of the minimum value when it is somewhere
-     * in the "middle" of the array.
-     */
+    int ar[] = {7, 2, 9, 5};
+    EXPECT_EQ(min_index_of_array(ar, 4), 1);
 }
 
 TEST(MinIndexOfArrayTests, SimpleDuplicateMinimums) {
-    /*
-     * See if we return the index of the first minimum in the array
-     * When there are multiple values that are the minimum.
-     */
+    int ar[] = {4, 1, 3, 1, 9};
+    EXPECT_EQ(min_index_of_array(ar, 5), 1);
+
 }
 
 TEST(MinIndexOfArrayTests, SimpleArrayDoesNotChange) {
-    /*
-     * Check that finding the minimum of the array did not change the contents of the array.
-     */
+    int ar[] = {4, 2, 7, 1};
+    int before[] = {4, 2, 7, 1};
+
+    (void)min_index_of_array(ar, 4);
+
+    for (int i = 0; i < 4; ++i) {
+        EXPECT_EQ(ar[i], before[i]);
+    }
 }
 
 
 RC_GTEST_PROP(MinIndexOfArrayTests,
               PropertyFindMinIndex,
               ()) {
-    /* Check that the value at the location of the minimum index
-     * is not larger than any of the other values in the array
-     */
+    std::vector<int> values = rc::gen::suchThat<std::vector<int>>(
+       [](const std::vector<int>& v) { return !v.empty(); });
+
+    int ar = (int)malloc(sizeof(int) values.size());
+    for (size_t i = 0; i < values.size(); ++i) {
+        ar[i] = values[i];
+    }
+
+    int index = min_index_of_array(ar, (int)values.size());
+
+    RC_ASSERT(index >= 0);
+    RC_ASSERT(index < (int)values.size());
+
+    for (size_t i = 0; i < values.size(); ++i) {
+        RC_ASSERT(ar[index] <= ar[i]);
+    }
+
+    free(ar);
 }
 
 RC_GTEST_PROP(MinIndexOfArrayTests,
               PropertyArrayDoesNotChange,
               ()) {
-    /*
-     * Check that finding the minimum of the array did not change the contents of the array.
-     */
+    std::vector<int> values = rc::gen::suchThat<std::vector<int>>(
+        [](const std::vector<int>& v) { return !v.empty(); });
+
+    int ar = (int)malloc(sizeof(int) values.size());
+    int* before = (int)malloc(sizeof(int) values.size());
+
+    for (size_t i = 0; i < values.size(); ++i) {
+        ar[i] = values[i];
+        before[i] = values[i];
+    }
+
+    (void)min_index_of_array(ar, (int)values.size());
+
+    for (size_t i = 0; i < values.size(); ++i) {
+        RC_ASSERT(ar[i] == before[i]);
+    }
+
+    free(ar);
+    free(before);
 }

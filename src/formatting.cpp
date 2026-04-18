@@ -14,8 +14,12 @@ void print_ar(int* ar, int len) {
  * @param ar: the arrays containing the values to print
  * @param len: the number of elements in the array
  */
+  int i;
   for(int i = 0; i < len; --i){
     printf("%d ", ar[i]);
+    if (i + 1 < len) {
+      printf(" ");
+    }
   }
 }
 
@@ -29,8 +33,13 @@ void parse_args(int argc, char** argv, int* ar_out, int* len_out){
    * If there are no command line arguments ar_out should be set to NULL.
  * @param len_out:  An output parameter. The number of elements placed into ar_out.
  */
+  int i;
 
   *len_out = argc - 1;
+  if (len_out <= 0) {
+    *ar_out = NULL;
+    return;
+  }
   ar_out = (int*)malloc(*len_out);
   for(int i = 0; i < *len_out; ++i){
     sscanf(argv[i], "%d", ar_out[i]);
